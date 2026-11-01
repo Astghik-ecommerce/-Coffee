@@ -1,1 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QR Code Generator - Menu</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  
+  .container {
+    background: white;
+    border-radius: 24px;
+    padding: 48px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    max-width: 500px;
+    width: 100%;
+    text-align: center;
+  }
+  
+  h1 {
+    color: #1a1a2e;
+    font-size: 28px;
+    margin-bottom: 8px;
+    font-weight: 700;
+  }
+  
+  .subtitle {
+    color: #6b7280;
+    font-size: 14px;
+    margin-bottom: 32px;
+    word-break: break-all;
+  }
+  
+  .subtitle a {
+    color: #667eea;
+    text-decoration: none;
+  }
+  
+  .qr-wrapper {
+    background: white;
+    padding: 24px;
+    border-radius: 16px;
+    border: 3px solid #f3f4f6;
+    display: inline-block;
+    margin-bottom: 32px;
+    transition: transform 0.3s ease;
+  }
+  
+  .qr-wrapper:hover {
+    transform: scale(1.02);
+  }
+  
+  #qrcode {
+    display: flex;
+    justify-content: center;
+  }
+  
+  #qrcode img, #qrcode canvas {
+    display: block;
+  }
+  
+  .actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
+  button {
+    padding: 14px 28px;
+    border: none;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+  }
+  
+  .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+  }
+  
+  .btn-secondary {
+    background: #f3f4f6;
+    color: #374151;
+  }
+  
+  .btn-secondary:hover {
+    background: #e5e7eb;
+    transform: translateY(-2px);
+  }
+  
+  .badge {
+    display: inline-block;
+    background: #dcfce7;
+    color: #166534;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 20px;
+  }
+  
+  .info {
+    margin-top: 24px;
+    padding: 16px;
+    background: #f9fafb;
+    border-radius: 12px;
+    font-size: 13px;
+    color: #6b7280;
+    line-height: 1.6;
+  }
+  
+  .size-options {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  
+  .size-btn {
+    padding: 8px 16px;
+    border: 2px solid #e5e7eb;
+    background: white;
+    border-radius: 8px;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-weight: 500;
+  }
+  
+  .size-btn.active {
+    border-color: #667eea;
+    background: #eef2ff;
+    color: #667eea;
+  }
+  
+  .size-btn:hover {
+    border-color: #667eea;
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <div class="badge">✓ 100% FREE</div>
+    <h1>📱 Menu QR Code</h1>
+    <p class="subtitle">
+      <a href="https://astghik-ecommerce.github.io/freelance-portfolio" target="_blank">
+        astghik-ecommerce.github.io/freelance-portfolio
+      </a>
+    </p>
+    
+    <div class="size-options">
+      <button class="size-btn" data-size="200">Small</button>
+      <button class="size-btn active" data-size="280">Medium</button>
+      <button class="size-btn" data-size="400">Large</button>
+    </div>
+    
+    <div class="qr-wrapper">
+      <div id="qrcode"></div>
+    </div>
+    
+    <div class="actions">
+      <button class="btn-primary" onclick="downloadQR()">
+        ⬇️ Download PNG
+      </button>
+      <button class="btn-secondary" onclick="copyImage()">
+        📋 Copy Image
+      </button>
+    </div>
+    
+    <div class="info">
+      💡 <strong>Tip:</strong> Print this QR code and place it on your tables, flyers, or business cards. Customers can scan it to instantly view your menu.
+    </div>
+  </div>
+
+<script>
+  const MENU_URL = "https://astghik-ecommerce.github.io/freelance-portfolio";
+  let currentSize = 280;
+  let qrcodeInstance;
+  
+  function generateQR(size) {
+    const container = document.getElementById('qrcode');
+    container.innerHTML = '';
+    
+    qrcodeInstance = new QRCode(container, {
+      text: MENU_URL,
+      width: size,
+      height: size,
+      colorDark: "#1a1a2e",
+      colorLight: "#ffffff",
+      correctLevel: QRCode.CorrectLevel.H
+    });
+  }
+  
+  function downloadQR() {
+    const canvas = document.querySelector('#qrcode canvas');
+    if (!canvas) {
+      // Fallback: use img if canvas not available
+      const img = document.querySelector('#qrcode img');
+      if (img) {
+        const link = document.createElement('a');
+        link.download = 'menu-qr-code.png';
+        link.href = img.src;
+        link.click();
+      }
+      return;
+    }
+    
+    // Create a larger canvas with padding for better print quality
+    const padding = 40;
+    const exportCanvas = document.createElement('canvas');
+    exportCanvas.width = canvas.width + padding * 2;
+    exportCanvas.height = canvas.height + padding * 2;
+    const ctx = exportCanvas.getContext('2d');
+    
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(0, 0, exportCanvas.width, exportCanvas.height);
+    ctx.drawImage(canvas, padding, padding);
+    
+    const link = document.createElement('a');
+    link.download = 'menu-qr-code.png';
+    link.href = exportCanvas.toDataURL('image/png');
+    link.click();
+  }
+  
+  async function copyImage() {
+    const canvas = document.querySelector('#qrcode canvas');
+    if (!canvas) {
+      alert('Please wait for QR code to generate');
+      return;
+    }
+    
+    try {
+      const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+      await navigator.clipboard.write([
+        new ClipboardItem({ 'image/png': blob })
+      ]);
+      
+      const btn = event.target;
+      const originalText = btn.innerHTML;
+      btn.innerHTML = '✅ Copied!';
+      setTimeout(() => btn.innerHTML = originalText, 2000);
+    } catch (err) {
+      alert('Copy failed. Please right-click the QR code and select "Copy image"');
+    }
+  }
+  
+  // Size selector
+  document.querySelectorAll('.size-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.size-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentSize = parseInt(btn.dataset.size);
+      generateQR(currentSize);
+    });
+  });
+  
+  // Initial generation
+  generateQR(currentSize);
+</script>
+</body>
+</html>
 
